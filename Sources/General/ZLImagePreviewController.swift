@@ -96,7 +96,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private var navBlurView: UIVisualEffectView?
     
-    private lazy var backBtn: UIButton = {
+    public lazy var backBtn: UIButton = {
         let btn = UIButton(type: .custom)
         var image = UIImage.zl.getImage("zl_navBack")
         if isRTL() {
@@ -110,7 +110,7 @@ public class ZLImagePreviewController: UIViewController {
         return btn
     }()
     
-    private lazy var indexLabel: UILabel = {
+    public lazy var indexLabel: UILabel = {
         let label = UILabel()
         label.textColor = .zl.indexLabelTextColor
         label.font = ZLLayout.navTitleFont
@@ -118,7 +118,7 @@ public class ZLImagePreviewController: UIViewController {
         return label
     }()
     
-    private lazy var selectBtn: ZLEnlargeButton = {
+    public lazy var selectBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
         btn.setImage(.zl.getImage("zl_btn_unselected_with_check"), for: .normal)
         btn.setImage(.zl.getImage("zl_btn_selected"), for: .selected)
