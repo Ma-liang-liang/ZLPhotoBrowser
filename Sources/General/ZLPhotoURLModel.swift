@@ -8,7 +8,6 @@
 import UIKit
 
 public class ZLPhotoURLModel: NSObject {
-
     
     public var url: URL = URL(fileURLWithPath: "")
     

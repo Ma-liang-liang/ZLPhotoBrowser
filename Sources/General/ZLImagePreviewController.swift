@@ -61,7 +61,7 @@ public class ZLImagePreviewController: UIViewController {
     private var showSelectBtn: Bool = false
     
     private var showBottomView: Bool = false
-
+    
     public private(set) var currentIndex: Int
     
     private var indexBeforOrientationChanged: Int
@@ -135,7 +135,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private lazy var bottomView: UIView = {
         let view = UIView()
-//        view.backgroundColor = .zl.bottomToolViewBgColorOfPreviewVC
+        //        view.backgroundColor = .zl.bottomToolViewBgColorOfPreviewVC
         view.backgroundColor = .clear
         return view
     }()
@@ -235,7 +235,7 @@ public class ZLImagePreviewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupUI()
         addDismissInteractiveTransition()
         resetSubViewStatus()
@@ -599,13 +599,13 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
                 baseCell = cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewCell.zl.identifier, for: indexPath) as! ZLPhotoPreviewCell
-
+                
                 cell.singleTapBlock = { [weak self] in
                     self?.tapPreviewCell()
                 }
-
+                
                 cell.model = model
-
+                
                 baseCell = cell
             }
             
@@ -662,11 +662,11 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
                 baseCell = cell
             }
         } else {
-            #if DEBUG
-                fatalError("Preview obj must one of PHAsset, UIImage, URL")
-            #else
-                return UICollectionViewCell()
-            #endif
+#if DEBUG
+            fatalError("Preview obj must one of PHAsset, UIImage, URL")
+#else
+            return UICollectionViewCell()
+#endif
         }
         
         baseCell.singleTapBlock = { [weak self] in
