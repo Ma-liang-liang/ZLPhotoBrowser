@@ -221,10 +221,11 @@ public class ZLImagePreviewController: UIViewController {
         urlImageLoader: ZLImageLoaderMutiUrlBlock? = nil
     ) {
         self.datas = datas
+        self.selectStatus = Array(repeating: true, count: datas.count)
+        self.showSelectBtn = false
         currentIndex = min(index, datas.count - 1)
         indexBeforOrientationChanged = currentIndex
         self.mutiUrlImageLoader = urlImageLoader
-        self.selectStatus = Array(repeating: true, count: datas.count)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -412,7 +413,9 @@ public class ZLImagePreviewController: UIViewController {
         indexLabel.text = String(currentIndex + 1) + " / " + String(datas.count)
         
         if showSelectBtn {
-            selectBtn.isSelected = selectStatus[currentIndex]
+            if currentIndex < selectStatus.count {
+                selectBtn.isSelected = selectStatus[currentIndex]
+            }
         } else {
             selectBtn.isHidden = true
         }
