@@ -52,7 +52,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private let datas: [Any]
     
-    private var selectStatus: [Bool]
+    private var selectStatus: [Bool] = []
     
     private var urlType: ((URL) -> ZLURLType)?
     
@@ -411,15 +411,11 @@ public class ZLImagePreviewController: UIViewController {
     
     private func resetSubViewStatus() {
         indexLabel.text = String(currentIndex + 1) + " / " + String(datas.count)
-        
-        if showSelectBtn {
-            if currentIndex < selectStatus.count {
-                selectBtn.isSelected = selectStatus[currentIndex]
-            }
-        } else {
-            selectBtn.isHidden = true
-        }
-        
+//        if showSelectBtn {
+//            selectBtn.isSelected = selectStatus[currentIndex]
+//        } else {
+//            selectBtn.isHidden = true
+//        }
         resetBottomViewFrame()
     }
     
