@@ -13,7 +13,7 @@ public class ZLPhotoURLModel: NSObject {
     
     public var thumbnailUrl: URL = URL(fileURLWithPath: "")
     
-    public var type: ZLPhotoModel.MediaType = .unknown
+    public var type: ZLURLType = .image
     
     
 }
