@@ -298,6 +298,14 @@ class ViewController: UIViewController {
     }
     
     @objc func previewLocalAndNetImage() {
+        
+        ZLPhotoUIConfiguration.default()
+            .customImageForKey(["zl_navBack": UIImage(named: "nav_close")])
+            .navBarColorOfPreviewVC(.clear)
+            .bottomToolViewBgColorOfPreviewVC(.clear)
+            .navViewBlurEffectOfPreview(nil)
+            .bottomViewBlurEffectOfPreview(nil)
+        
         var datas: [Any] = []
         // network image
         datas.append(URL(string: "https://cdn.pixabay.com/photo/2020/10/14/18/35/sign-post-5655110_1280.png")!)
@@ -320,7 +328,7 @@ class ViewController: UIViewController {
         )
         
         let videoSuffixs = ["mp4", "mov", "avi", "rmvb", "rm", "flv", "3gp", "wmv", "vob", "dat", "m4v", "f4v", "mkv"] // and more suffixs
-        let vc = ZLImagePreviewController(datas: datas, index: 0, showSelectBtn: true) { url -> ZLURLType in
+        let vc = ZLImagePreviewController(datas: datas, index: 0, showSelectBtn: false) { url -> ZLURLType in
             // Just for demo.
             if url.absoluteString == netVideoUrlString {
                 return .video
@@ -339,6 +347,7 @@ class ViewController: UIViewController {
                 loadFinish()
             }
         }
+
         
         vc.delegate = self
         

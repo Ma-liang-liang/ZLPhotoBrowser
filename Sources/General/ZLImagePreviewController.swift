@@ -63,7 +63,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private var indexBeforOrientationChanged: Int
     
-    lazy var collectionView: UICollectionView = {
+    public lazy var collectionView: UICollectionView = {
         let layout = ZLCollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         
@@ -115,6 +115,7 @@ public class ZLImagePreviewController: UIViewController {
         label.textColor = .zl.indexLabelTextColor
         label.font = ZLLayout.navTitleFont
         label.textAlignment = .center
+        label.isHidden = true
         return label
     }()
     
@@ -129,7 +130,8 @@ public class ZLImagePreviewController: UIViewController {
     
     private lazy var bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .zl.bottomToolViewBgColorOfPreviewVC
+//        view.backgroundColor = .zl.bottomToolViewBgColorOfPreviewVC
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -145,6 +147,7 @@ public class ZLImagePreviewController: UIViewController {
         btn.backgroundColor = .zl.bottomToolViewBtnNormalBgColorOfPreviewVC
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = ZLLayout.bottomToolBtnCornerRadius
+        btn.isHidden = true
         return btn
     }()
     
