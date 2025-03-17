@@ -130,6 +130,7 @@ public class ZLImagePreviewController: UIViewController {
         btn.setImage(.zl.getImage("zl_btn_selected"), for: .selected)
         btn.enlargeInset = 10
         btn.addTarget(self, action: #selector(selectBtnClick), for: .touchUpInside)
+        btn.isHidden = true
         return btn
     }()
     
@@ -216,16 +217,16 @@ public class ZLImagePreviewController: UIViewController {
     }
     
     @objc public init(
-        datas: [ZLPhotoURLModel],
+        models: [ZLPhotoURLModel],
         index: Int = 0,
-        urlImageLoader: ZLImageLoaderMutiUrlBlock? = nil
+        mutiUrlImageLoader: ZLImageLoaderMutiUrlBlock? = nil
     ) {
-        self.datas = datas
-        self.selectStatus = Array(repeating: true, count: datas.count)
+        self.datas = models
+        self.selectStatus = Array(repeating: true, count: models.count)
         self.showSelectBtn = false
         currentIndex = min(index, datas.count - 1)
         indexBeforOrientationChanged = currentIndex
-        self.mutiUrlImageLoader = urlImageLoader
+        self.mutiUrlImageLoader = mutiUrlImageLoader
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -411,11 +412,11 @@ public class ZLImagePreviewController: UIViewController {
     
     private func resetSubViewStatus() {
         indexLabel.text = String(currentIndex + 1) + " / " + String(datas.count)
-//        if showSelectBtn {
-//            selectBtn.isSelected = selectStatus[currentIndex]
-//        } else {
-//            selectBtn.isHidden = true
-//        }
+        if showSelectBtn {
+            selectBtn.isSelected = selectStatus[currentIndex]
+        } else {
+            selectBtn.isHidden = true
+        }
         resetBottomViewFrame()
     }
     
