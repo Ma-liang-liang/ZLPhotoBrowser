@@ -768,12 +768,16 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
     lazy var playBar: ZLVideoOperationBar = {
         let view = ZLVideoOperationBar()
         view.isHidden = true
+        view.playBtn.addTarget(self, action: #selector(playBtnClick), for: .touchUpInside)
+        view.progressSlider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         return view
     }()
     
     private var videoURLString = ""
     
     private var videoSizeCache: [String: CGSize] = [:]
+    
+    var timeObserverToken: Any?
     
     override var currentImage: UIImage? {
         guard let currentItem = player?.currentItem else { return nil }
@@ -794,8 +798,39 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         }
     }
     
+    // 进度条拖拽事件
+    @objc func sliderValueChanged(_ sender: UISlider) {
+        guard let duration = player?.currentItem?.duration else { return }
+        let targetTime = CMTime(seconds: Double(sender.value) * CMTimeGetSeconds(duration), preferredTimescale: 600)
+        player?.seek(to: targetTime)
+    }
+    
+    func formatTime(seconds: Double) -> String {
+        let minutes = Int(seconds) / 60
+        let seconds = Int(seconds) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    func addTimeObserver() {
+        let interval = CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        timeObserverToken = player?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
+            guard let self = self else { return }
+            let currentTime = CMTimeGetSeconds(time)
+            let duration = CMTimeGetSeconds(self.player?.currentItem?.duration ?? CMTime.zero)
+            
+            // 更新进度条和时间标签
+            self.playBar.progressSlider.value = Float(currentTime / duration)
+            self.playBar.startTimeLabel.text = self.formatTime(seconds: currentTime)
+            self.playBar.endTimeLabel.text = self.formatTime(seconds: duration)
+        }
+    }
+    
     deinit {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        player?.pause()
+        if let token = timeObserverToken {
+            player?.removeTimeObserver(token)
+        }
         zl_debugPrint("ZLNetVideoPreviewCell deinit")
     }
     
@@ -844,7 +879,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         contentView.addSubview(playBar)
         NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
     }
-    
+        
     @objc private func playBtnClick() {
         let currentTime = player?.currentItem?.currentTime()
         let duration = player?.currentItem?.duration
@@ -926,6 +961,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         }
         playerView.layer.insertSublayer(playerLayer!, at: 0)
         NotificationCenter.default.addObserver(self, selector: #selector(playFinish), name: AVPlayerItem.didPlayToEndTimeNotification, object: player?.currentItem)
+        addTimeObserver()
     }
     
     private func calculatePlayerFrame(for item: AVPlayerItem, completion: ((CGRect) -> Void)?) {
@@ -1378,11 +1414,79 @@ class ZLVideoOperationBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+    }
     
     func makeUI() {
         
+        let screenSize = UIScreen.main.bounds.size
+        frame.size = CGSize(width: screenSize.width, height: 36)
+        
         backgroundColor = UIColor(white: 0.1, alpha: 0.6)
+        addSubview(playBtn)
+        addSubview(startTimeLabel)
+        addSubview(progressSlider)
+        addSubview(endTimeLabel)
+        playBtn.translatesAutoresizingMaskIntoConstraints = false
+        startTimeLabel.translatesAutoresizingMaskIntoConstraints = false
+        progressSlider.translatesAutoresizingMaskIntoConstraints = false
+        endTimeLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            playBtn.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            playBtn.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            playBtn.widthAnchor.constraint(equalToConstant: 30),
+            playBtn.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        
+        startTimeLabel.sizeToFit()
+        let startW = startTimeLabel.frame.size.width + 4
+        NSLayoutConstraint.activate([
+            startTimeLabel.leadingAnchor.constraint(equalTo: playBtn.trailingAnchor, constant: 4),
+            startTimeLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            startTimeLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: startW)
+        ])
+        
+        NSLayoutConstraint.activate([
+            progressSlider.leadingAnchor.constraint(equalTo: startTimeLabel.trailingAnchor, constant: 4),
+            progressSlider.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            progressSlider.heightAnchor.constraint(equalToConstant: 16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            endTimeLabel.leadingAnchor.constraint(equalTo: progressSlider.trailingAnchor, constant: 4),
+            endTimeLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            endTimeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20)
+        ])
     }
     
+    lazy var playBtn: UIButton = {
+        let btn = UIButton()
+        btn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
+        return btn
+    }()
     
+    lazy var startTimeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.text = "00:00"
+        return label
+    }()
+    
+    lazy var endTimeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.text = "00:00"
+        return label
+    }()
+    
+    lazy var progressSlider: UISlider = {
+        let view = UISlider()
+        view.tintColor = .white
+        return view
+    }()
 }
