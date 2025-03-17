@@ -764,6 +764,13 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         return false
     }
     
+    //操作播放进度
+    lazy var playBar: ZLVideoOperationBar = {
+        let view = ZLVideoOperationBar()
+        view.isHidden = true
+        return view
+    }()
+    
     private var videoURLString = ""
     
     private var videoSizeCache: [String: CGSize] = [:]
@@ -810,9 +817,16 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
             playerView.frame = frame
             playerLayer?.frame = CGRect(origin: .zero, size: frame.size)
         }
-        
+    
         playBtn.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 50))
         playBtn.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        let playH: CGFloat = 36
+        let playW = frame.size.width
+        var playY = frame.size.height - playH
+        if #available(iOS 11.0, *) {
+            playY = frame.size.height - playH - safeAreaInsets.bottom
+        }
+        playBar.frame = CGRect(x: 0, y: playY, width: playW, height: playH)
     }
     
     override func didEndDisplaying() {
@@ -827,7 +841,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         contentView.addSubview(playerView)
         contentView.addSubview(playBtn)
         contentView.addGestureRecognizer(singleTapGes)
-        
+        contentView.addSubview(playBar)
         NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
@@ -842,6 +856,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
             try? AVAudioSession.sharedInstance().setCategory(.playback)
             try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             playBtn.setImage(nil, for: .normal)
+            playBar.isHidden = true
             singleTapBlock?()
         } else {
             pausePlayer(seekToZero: false)
@@ -877,6 +892,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         }
         
         playBtn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
+        playBar.isHidden = false
         singleTapBlock?()
     }
     
@@ -896,10 +912,16 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         playerView.frame = bounds
         playerLayer?.frame = bounds
         calculatePlayerFrame(for: item) { [weak self] rect in
-            self?.playerView.frame = rect
+            guard let self else {
+                return
+            }
+            self.playerView.frame = rect
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            self?.playerLayer?.frame = CGRect(origin: .zero, size: rect.size)
+            self.playerLayer?.frame = CGRect(origin: .zero, size: rect.size)
+            self.playerView.bringSubviewToFront(self.playBar)
+            self.playBar.isHidden = false
+            self.layoutIfNeeded()
             CATransaction.commit()
         }
         playerView.layer.insertSublayer(playerLayer!, at: 0)
@@ -1343,4 +1365,24 @@ extension ZLPreviewView: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         resumeGif()
     }
+}
+
+class ZLVideoOperationBar: UIView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        makeUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func makeUI() {
+        
+        backgroundColor = UIColor(white: 0.1, alpha: 0.6)
+    }
+    
+    
 }
