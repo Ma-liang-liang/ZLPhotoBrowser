@@ -10,6 +10,7 @@
 		2CC461BF2551214700BF96E8 /* ZLAddPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC461BE2551214600BF96E8 /* ZLAddPhotoCell.swift */; };
 		2CC461C22551312C00BF96E8 /* Bool+ZLPhotoBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC461C12551312C00BF96E8 /* Bool+ZLPhotoBrowser.swift */; };
 		3B1C3BE92A9E3E910034D478 /* libswiftAVFoundation.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B1C3BE82A9E3E910034D478 /* libswiftAVFoundation.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D82F4DFB2D87FD3E00310676 /* ZLPhotoURLModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F4DFA2D87FD3E00310676 /* ZLPhotoURLModel.swift */; };
 		E406C81C251B4F9B00852E46 /* ZLVideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E406C81B251B4F9B00852E46 /* ZLVideoManager.swift */; };
 		E40ECF4824FFB8BB00A4D923 /* ZLPhotoBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40ECF4724FFB8BB00A4D923 /* ZLPhotoBrowser.swift */; };
 		E410177925305C73004C4952 /* ZLFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E410177825305C73004C4952 /* ZLFilter.swift */; };
@@ -88,6 +89,7 @@
 		2CC461BE2551214600BF96E8 /* ZLAddPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLAddPhotoCell.swift; sourceTree = "<group>"; };
 		2CC461C12551312C00BF96E8 /* Bool+ZLPhotoBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+ZLPhotoBrowser.swift"; sourceTree = "<group>"; };
 		3B1C3BE82A9E3E910034D478 /* libswiftAVFoundation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftAVFoundation.tbd; path = usr/lib/swift/libswiftAVFoundation.tbd; sourceTree = SDKROOT; };
+		D82F4DFA2D87FD3E00310676 /* ZLPhotoURLModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLPhotoURLModel.swift; sourceTree = "<group>"; };
 		E406C81B251B4F9B00852E46 /* ZLVideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLVideoManager.swift; sourceTree = "<group>"; };
 		E40ECF4724FFB8BB00A4D923 /* ZLPhotoBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLPhotoBrowser.swift; sourceTree = "<group>"; };
 		E410177825305C73004C4952 /* ZLFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZLFilter.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				FDCBAF9F2B1ED0A9000860FD /* ZLWeakProxy.h */,
 				FDCBAF9E2B1ED0A9000860FD /* ZLWeakProxy.m */,
 				FD3B66972B984BB0009C7353 /* ZLWeakProxy.swift */,
+				D82F4DFA2D87FD3E00310676 /* ZLPhotoURLModel.swift */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				FD1C586B277AB8790037A746 /* UIViewController+ZLPhotoBrowser.swift in Sources */,
 				E4C911DA24E2A4910061DA40 /* ZLCustomCamera.swift in Sources */,
 				FD0DA4FD2C6E27C000B3F4C5 /* PHPhotoLibrary+ZLPhotoBrowser.swift in Sources */,
+				D82F4DFB2D87FD3E00310676 /* ZLPhotoURLModel.swift in Sources */,
 				E49FD9FE258A150600185885 /* PHAsset+ZLPhotoBrowser.swift in Sources */,
 				E462466024EBEEF800EF6C57 /* ZLAlbumListController.swift in Sources */,
 				E4C911D824E298B80061DA40 /* ZLGeneralDefine.swift in Sources */,

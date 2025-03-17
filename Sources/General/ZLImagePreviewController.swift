@@ -34,6 +34,9 @@ import Photos
 
 public typealias ZLImageLoaderBlock = (_ url: URL, _ imageView: UIImageView, _ progress: @escaping (CGFloat) -> Void, _ complete: @escaping () -> Void) -> Void
 
+public typealias ZLImageLoaderMutiUrlBlock = (_ url: URL, _ thumbnailUrl: URL, _ imageView: UIImageView, _ progress: @escaping (CGFloat) -> Void, _ complete: @escaping () -> Void) -> Void
+
+
 @objc public protocol ZLImagePreviewControllerDelegate: AnyObject {
     @objc optional func imagePreviewController(_ controller: ZLImagePreviewController, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
     
@@ -51,17 +54,19 @@ public class ZLImagePreviewController: UIViewController {
     
     private var selectStatus: [Bool]
     
-    private let urlType: ((URL) -> ZLURLType)?
+    private var urlType: ((URL) -> ZLURLType)?
     
-    private let urlImageLoader: ZLImageLoaderBlock?
+    private var urlImageLoader: ZLImageLoaderBlock?
     
-    private let showSelectBtn: Bool
+    private var showSelectBtn: Bool = false
     
-    private let showBottomView: Bool
+    private var showBottomView: Bool = false
 
     public private(set) var currentIndex: Int
     
     private var indexBeforOrientationChanged: Int
+    
+    private var mutiUrlImageLoader: ZLImageLoaderMutiUrlBlock?
     
     public lazy var collectionView: UICollectionView = {
         let layout = ZLCollectionViewFlowLayout()
@@ -207,6 +212,19 @@ public class ZLImagePreviewController: UIViewController {
         self.showBottomView = showSelectBtn ? true : showBottomView
         self.urlType = urlType
         self.urlImageLoader = urlImageLoader
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @objc public init(
+        datas: [ZLPhotoURLModel],
+        index: Int = 0,
+        urlImageLoader: ZLImageLoaderMutiUrlBlock? = nil
+    ) {
+        self.datas = datas
+        currentIndex = min(index, datas.count - 1)
+        indexBeforOrientationChanged = currentIndex
+        self.mutiUrlImageLoader = urlImageLoader
+        self.selectStatus = Array(repeating: true, count: datas.count)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -619,6 +637,27 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetVideoPreviewCell.zl.identifier, for: indexPath) as! ZLNetVideoPreviewCell
                 
                 cell.configureCell(videoUrl: url, httpHeader: videoHttpHeader)
+                
+                baseCell = cell
+            }
+        } else if let model = obj as? ZLPhotoURLModel {
+            if model.type == .image {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetImagePreviewCell.zl.identifier, for: indexPath) as! ZLNetImagePreviewCell
+                cell.image = nil
+                mutiUrlImageLoader?(model.url, model.thumbnailUrl, cell.preview.imageView, { [weak cell] progress in
+                    ZLMainAsync {
+                        cell?.progress = progress
+                    }
+                }, { [weak cell] in
+                    ZLMainAsync {
+                        cell?.preview.resetSubViewSize()
+                    }
+                })
+                baseCell = cell
+            } else {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetVideoPreviewCell.zl.identifier, for: indexPath) as! ZLNetVideoPreviewCell
+                
+                cell.configureCell(videoUrl: model.url, httpHeader: videoHttpHeader)
                 
                 baseCell = cell
             }

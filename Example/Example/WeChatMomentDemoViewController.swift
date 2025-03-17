@@ -128,7 +128,7 @@ extension WeChatMomentDemoViewController: UICollectionViewDataSource, UICollecti
         if indexPath.row == images.count {
             selectPhotos()
         } else {
-            let previewVC = ZLImagePreviewController(datas: assets, index: indexPath.row, showSelectBtn: true)
+            let previewVC = ZLImagePreviewController(datas: assets, index: indexPath.row, showSelectBtn: false)
             
             previewVC.doneBlock = { [weak self] (res) in
                 guard let `self` = self else { return }
