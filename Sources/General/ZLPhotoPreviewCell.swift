@@ -891,6 +891,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
             try? AVAudioSession.sharedInstance().setCategory(.playback)
             try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
             playBtn.setImage(nil, for: .normal)
+            playBar.playBtn.isSelected = true
             playBar.isHidden = true
             singleTapBlock?()
         } else {
@@ -924,10 +925,12 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         }
         if seekToZero {
             player?.seek(to: .zero)
+            playBar.progressSlider.value = 0
         }
         
         playBtn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
-        playBar.isHidden = false
+        playBar.playBtn.isSelected = false
+        self.playBar.isHidden = false
         singleTapBlock?()
     }
     
@@ -1464,7 +1467,8 @@ class ZLVideoOperationBar: UIView {
     
     lazy var playBtn: UIButton = {
         let btn = UIButton()
-        btn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
+        btn.setImage(.zl.getImage("zl_playButtonWhite"), for: .normal)
+        btn.setImage(.zl.getImage("zl_pauseButtonWhite"), for: .selected)
         return btn
     }()
     
